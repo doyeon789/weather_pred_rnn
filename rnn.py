@@ -134,14 +134,17 @@ for pred_time, val in predictions:
     records.append(record)
 
 try:
-    supabase.table("prediction").delete().neq("predicted_time", "").execute()
+    # 기존 모든 prediction 데이터 삭제
+    supabase.table("prediction").delete().isnot("prediction_id", None).execute()
     print("🗑️ 기존 prediction 테이블의 모든 데이터 삭제 완료")
 
+    # 새 데이터 삽입
     response = supabase.table("prediction").insert(records).execute()
     print(f"\n✅ Supabase 업로드 완료: {len(records)}개의 예측값 저장됨")
 
 except Exception as e:
     print("❌ Supabase 작업 중 오류 발생:", e)
+
 
 
 # --- 11. 콘솔 출력 ---
